@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Presentación KPI - Ticket Promedio</title>
+
+<style>
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Verdana;
+    line-height: 1.6;
+    padding: 40px 20px;
+    max-width: 960px;
+    margin: auto;
+    color: #333;
+    background: #f4f7f9;
+  }
+
+  .container {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+
+  /* ── NAVEGACIÓN LATERAL ── */
+  .toc-sidebar {
+    position: fixed;
+    top: 30px;
+    right: 20px;
+    width: 210px;
+    background: #fff;
+    border: 1px solid #dce6f0;
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    font-size: 12.5px;
+    z-index: 100;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .toc-sidebar h4 {
+    margin: 0 0 10px;
+    font-size: 13px;
+    color: #0056b3;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .toc-sidebar ul { margin: 0; padding: 0; list-style: none; }
+  .toc-sidebar li { margin-bottom: 6px; }
+  .toc-sidebar a { color: #333; text-decoration: none; display: block; padding: 3px 6px; border-radius: 4px; transition: background .15s; }
+  .toc-sidebar a:hover { background: #eef4fb; color: #0056b3; }
+
+  @media (max-width: 1200px) { .toc-sidebar { display: none; } }
+
+  /* ── ENCABEZADOS ── */
+  h1 { color: #0056b3; border-bottom: 3px solid #0056b3; padding-bottom: 10px; }
+
+  h2 {
+    color: #2c3e50;
+    margin-top: 50px;
+    border-left: 5px solid #0056b3;
+    padding-left: 15px;
+  }
+
+  h3 {
+    color: #444;
+    margin-top: 25px;
+    background: #eef4fb;
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  h4 { color: #0056b3; margin-top: 0; }
+  h5 { color: #555; margin-top: 15px; }
+
+  p { text-align: justify; }
+  ul { margin-bottom: 20px; }
+  li { margin-bottom: 10px; text-align: justify; }
+
+  /* ── BADGE DE SECCIÓN ── */
+  .section-badge {
+    display: inline-block;
+    background: #0056b3;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 6px;
+    letter-spacing: .4px;
+  }
+
+  /* ── TABLA DE TECNOLOGÍAS ── */
+  .tech-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+  }
+  .tech-table thead tr { background: #0056b3; color: #fff; }
+  .tech-table th, .tech-table td { padding: 10px 14px; text-align: left; border: 1px solid #dce6f0; }
+  .tech-table tbody tr:nth-child(even) { background: #f4f7f9; }
+
+  /* ── TARJETAS DE CAPA ── */
+  .-card {
+    background: #f8fbff;
+    border: 1px solid #d0e4f7;
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 16px;
+  }
+  .-card h4 { margin: 0 0 8px; font-size: 15px; }
+
+  /* ── IMAGENES ── */
+  .imagen-reporte {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 16px 0;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .highlight { font-weight: bold; color: #0056b3; }
+
+  /* ── TARJETAS DE PREGUNTAS ── */
+  .tarjeta-pregunta {
+    background: #ffffff;
+    border-left: 6px solid #0056b3;
+    padding: 20px;
+    margin-top: 30px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  }
+
+  /* ── TARJETA POWERAPPS ── */
+  .app-screen-card {
+    background: #ffffff;
+    border-left: 5px solid #7b2fff;
+    padding: 18px 20px;
+    margin-top: 28px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+  }
+  .app-screen-card h4 { color: #7b2fff; }
+
+  /* ── GRID DE PANTALLAS ── */
+  .screens-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 14px 0;
+  }
+  @media (max-width: 640px) { .screens-grid { grid-template-columns: 1fr; } }
+  .screens-grid .imagen-reporte { margin: 0; }
+
+  /* ── PILL ACCENT ── */
+  .pill {
+    display: inline-block;
+    background: #e8f0fe;
+    color: #0056b3;
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 2px;
+  }
+
+  /* ── TIMELINE ETL ── */
+  .etl-step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .etl-num {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    background: #0056b3;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .etl-content h5 { margin: 0 0 6px; color: #0056b3; font-size: 14px; }
+  .etl-content p { margin: 0; font-size: 13.5px; }
+
+  /* ── POWER AUTOMATE CARDS ── */
+  .automate-card {
+    background: #fff7f0;
+    border-left: 5px solid #e35f00;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+  }
+  .automate-card h5 { color: #c04e00; margin: 0 0 6px; }
+
+  /* ── CONCLUSIONES ── */
+  #conclusiones { margin-top: 40px; }
+
+  hr { border: none; border-top: 1px solid #dce6f0; margin: 40px 0; }
+
+</style>
+
+</head>
+
+<body>
+
+<!-- NAVEGACIÓN LATERAL -->
+<nav class="toc-sidebar">
+  <h4>📋 Contenido</h4>
+  <ul>
+    <li><a href="#descripcion">Descripción General</a></li>
+    <li><a href="#arquitectura">Arquitectura</a></li>
+    <li><a href="#data-">Data </a></li>
+    <li><a href="#app-">Application </a></li>
+    <li><a href="#etl-">ETL </a></li>
+    <li><a href="#dw-">Data Warehouse</a></li>
+    <li><a href="#presentation-">Capa de Presentación</a></li>
+    <li><a href="#conclusiones">Conclusiones</a></li>
+  </ul>
+</nav>
+
+<div class="container">
+
+  <h1>Presentación KPI - Ticket promedio</h1>
+
+  <!-- ════════════════════════════════════════
+       DESCRIPCIÓN GENERAL
+  ════════════════════════════════════════ -->
+  <section id="descripcion">
+    <h2>Descripción General</h2>
+
+    <p>
+      Los reportes desarrollados en Power BI representan la capa de presentación del análisis del
+      Indicador Mensual de Ticket Promedio de Ventas Totales por Canales Digitales
+      (Página Web y Aplicación Móvil) para Falabella Perú.
+    </p>
+
+    <p>
+      Para fines académicos, la información utilizada corresponde a un caso ficticio, elaborado a partir de datos simulados generados mediante
+      herramientas de inteligencia artificial, con el propósito de replicar un escenario realista de análisis de ventas digitales.
+      Este caso fue desarrollado de manera grupal en el marco del Diplomado en Business Analytics.
+    </p>
+
+    <p>
+      Los reportes fueron diseñados con un enfoque ejecutivo, priorizando una interfaz
+      intuitiva que facilite la exploración de la información y el análisis del indicador.
+    </p>
+
+    <h2>Principales características</h2>
+
+    <ul>
+      <li>
+        <span class="highlight">Storytelling con datos:</span>
+        cada reporte sigue una secuencia lógica que facilita la comprensión del
+        comportamiento del indicador.
+      </li>
+      <li>
+        <span class="highlight">Análisis descriptivo:</span>
+        los reportes incluyen indicadores como ticket promedio mensual,
+        monto total de ventas y número de transacciones.
+      </li>
+      <li>
+        <span class="highlight">Filtros dinámicos:</span>
+        los usuarios pueden explorar la información aplicando filtros por fecha
+        y canal digital (Página Web y Aplicación Móvil).
+      </li>
+    </ul>
+
+    <h2>Impacto</h2>
+
+    <p>
+      Esta capa permite visualizar de manera clara el desempeño del ticket promedio de
+      ventas digitales, facilitando la identificación de oportunidades para mejorar
+      el valor promedio por transacción y apoyar la toma de decisiones basada en datos.
+    </p>
+  </section>
+
+  <hr>
+
+  <!-- ════════════════════════════════════════
+       ARQUITECTURA
+  ════════════════════════════════════════ -->
+  <section id="arquitectura">
+    <span class="section-badge">🏗️ Arquitectura</span>
+    <h2>Arquitectura del Proyecto</h2>
+
+    <p>
+      El proyecto implementa una arquitectura moderna de datos con el fin de centralizar y optimizar
+      la información proveniente de las operaciones de ventas digitales de Falabella Perú. El diseño
+      integra en un único ecosistema los datos de negocio, mejora su transformación y calidad con
+      flujos ETL escalables, y habilita su consulta de manera segura y flexible a través de Power BI.
+    </p>
+
+    <h3>🧰 Solución Tecnológica</h3>
+
+    <table class="tech-table">
+      <thead>
+        <tr>
+          <th>Tecnología</th>
+          <th>Función Principal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>🧱 Microsoft Fabric</td><td>Integración, transformación y consolidación de datos en un entorno centralizado.</td></tr>
+        <tr><td>🗄️ Azure SQL / Fabric Warehouse</td><td>Almacenamiento estructurado, confiable y de alto rendimiento.</td></tr>
+        <tr><td>⚡ Cursor </td><td>Desarrollo low-code para aplicativo web.</td></tr>
+        <tr><td>📊 Power BI</td><td>Análisis interactivo y visualizaciones del KPI de ticket promedio.</td></tr>
+
+      </tbody>
+    </table>
+
+    <h3>🚀 Diagrama de Arquitectura</h3>
+    <img src="arquitectura.png" class="imagen-reporte" alt="Diagrama de arquitectura del proyecto">
+
+    <p>La arquitectura se organiza en las siguientes capas:</p>
+
+    <div class="-card">
+      <h4>📁 Data Sources</h4>
+      <p>La información se origina en archivos Excel y sistemas transaccionales. Estos insumos se incorporan al ecosistema mediante procesos manuales o parcialmente automatizados.</p>
+    </div>
+    <div class="-card">
+      <h4>🗄️ Data </h4>
+      <p>Toda la información se consolida en el almacén de datos, funcionando como repositorio centralizado. Además, se integran datos capturados desde aplicaciones desarrolladas con apoyo de Cursor</p>
+    </div>
+    <div class="-card">
+      <h4>🧩 Application </h4>
+      <p>La interacción con los usuarios se gestiona a través de aplicativo, que ofrece una interfaz intuitiva para la carga, modificación y consulta de datos.</p>
+    </div>
+    <div class="-card">
+      <h4>🔄 ETL </h4>
+      <p>Con Microsoft Fabric (Dataflows y Pipelines) se automatiza la ingesta y transformación de datos hacia el Data Warehouse. Se emplean Notebooks en Python para ejecutar validaciones y generar notificaciones.</p>
+    </div>
+    <div class="-card">
+      <h4>🧱 Data Warehouse </h4>
+      <p>Los datos procesados se almacenan en un Fabric Data Warehouse, diseñado para consolidar información y habilitar análisis avanzados con medidas DAX y dimensiones de negocio.</p>
+    </div>
+    <div class="-card">
+      <h4>📊 Presentation </h4>
+      <p>Los usuarios acceden a reportes dinámicos mediante Power BI, con dashboards interactivos que favorecen la toma de decisiones en tiempo real.</p>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ════════════════════════════════════════
+       DATA 
+  ════════════════════════════════════════ -->
+  <section id="data-">
+    <span class="section-badge">🗄️ Data </span>
+    <h2>Modelo de Datos</h2>
+
+    <p>
+      El modelo de datos fue construido en Power BI a partir de las tablas publicadas
+      desde el entorno de Microsoft Fabric. La estructura responde a un esquema en
+      estrella que permite eficiencia en los análisis.
+    </p>
+
+    <p>Las principales tablas que conforman el modelo son:</p>
+    <p>
+      <span class="pill">Ventas</span>
+      <span class="pill">Clientes</span>
+      <span class="pill">Productos</span>
+      <span class="pill">Canales Digitales</span>
+      <span class="pill">Campañas</span>
+      <span class="pill">Calendario</span>
+    </p>
+
+    <img src="Modelodatos.png" class="imagen-reporte" alt="Modelo de datos en Power BI">
+  </section>
+
+  <hr>
+
+  <!-- ════════════════════════════════════════
+       APPLICATION 
+  ════════════════════════════════════════ -->
+  <section id="app-">
+    <span class="section-badge">🧩 Application </span>
+    <h2>Capa de Aplicación</h2>
+
+    <p>
+      Para asegurar una correcta implementación de la funcionalidad de la aplicacion, se realizaron
+      diagramas de flujo que describen el proceso paso a paso. Esto permitió identificar entradas,
+      salidas, validaciones y puntos críticos del flujo, garantizando una construcción más clara,
+      ordenada y alineada con los requerimientos del usuario.
+    </p>
+
+    <h3>🔄 Diagrama de Flujo del Proceso</h3>
+    <img src="diagrama_flujo.png" class="imagen-reporte" alt="Diagrama de flujo del proceso">
+
+    <!-- Pantalla Inicio -->
+    <div class="app-screen-card">
+      <h4>🏠 Pantalla de Inicio / Bienvenida</h4>
+      <p>
+        <strong>Propósito:</strong> Servir como punto de entrada principal para los usuarios,
+        facilitando el acceso centralizado a todas las funcionalidades mediante una interfaz
+        moderna, clara e intuitiva.
+      </p>
+      <p>Incluye menú central con navegación a los módulos: Ventas, Productos, Clientes, Canales Digitales y Reportes.</p>
+      <img src="app_inicio.png" class="imagen-reporte" alt="Pantalla de inicio">
+    </div>
+
+    <!-- Pantalla Ventas -->
+    <div class="app-screen-card">
+      <h4>🛒 Pantalla de Registro de Ventas</h4>
+      <p>
+        <strong>Propósito:</strong> Permite al usuario registrar transacciones digitales,
+        seleccionando producto, tipo de entrega y medio de pago, integrando búsqueda y confirmación
+        en un solo flujo.
+      <div class="screens-grid">
+        <img src="app_ventas1.png" class="imagen-reporte" alt="Pantalla ventas 1">
+        <img src="app_ventas2.png" class="imagen-reporte" alt="Pantalla ventas 2">
+        <img src="app_ventas3.png" class="imagen-reporte" alt="Pantalla ventas 3">
+        <img src="app_ventas4.png" class="imagen-reporte" alt="Pantalla ventas 4">
+        <img src="app_ventas5.png" class="imagen-reporte" alt="Pantalla ventas 5">
+        <img src="app_ventas6.png" class="imagen-reporte" alt="Pantalla ventas 6">
+        <img src="app_ventas7.png" class="imagen-reporte" alt="Pantalla ventas 7">
+      </div>
+    </div>
+
+    <!-- Pantalla Registro de cliente nuevo -->
+    <div class="app-screen-card">
+      <h4>🧍 Pantalla de registro de clientes</h4>
+      <p>
+        <strong>Propósito:</strong> Facilita que un cliente nuevo se registre en el aplicativo.
+      </p>
+      <ul>
+        <li>Panel lateral con lista de clientes y accesos rápidos.</li>
+        <li>Panel central con detalle del cliente seleccionado.</li>
+        <li>Acciones: Nuevo, Editar, Guardar, Ver historial de compras.</li>
+      </ul>
+      <img src="app_clientes.png" class="imagen-reporte" alt="Pantalla de clientes ">
+    </div>
+ <!-- Pantalla Administrador -->
+    <div class="app-screen-card">
+      <h4>🛒 Pantalla de administrador</h4>
+      <p>
+        <strong>Propósito:</strong> Permite al administrador gestionar las tablas de mantenimiento.
+      <div class="screens-grid">
+        <img src="adm1.png" class="imagen-reporte" alt="Pantalla administrador 1">
+        <img src="adm2.png" class="imagen-reporte" alt="Pantalla administrador 2">
+       <img src="adm3.png" class="imagen-reporte" alt="Pantalla administrador 3">
+      </div>
+    </div>
+  
+  </section>
+
+  <hr>
+
+  <!-- ════════════════════════════════════════
+       ETL 
+  ════════════════════════════════════════ -->
+  <section id="etl-">
+    <span class="section-badge">🔄 ETL </span>
+    <h2>Capa ETL – Extracción, Transformación y Carga</h2>
+
+    <p>
+      Este sistema implementa un flujo de datos automatizado y eficiente, integrando múltiples
+      capas tecnológicas dentro del ecosistema Microsoft. El objetivo es garantizar la correcta
+      ingesta, transformación y disponibilidad de la información para apoyar el análisis del
+      KPI de ticket promedio.
+    </p>
+
+    <div class="etl-step">
+      <div class="etl-num">1</div>
+      <div class="etl-content">
+        <h5>Origen de Datos</h5>
+        <p>Los datos se originan en los sistemas de ventas digitales (Web y App), que almacenan transacciones de forma estructurada en la base de datos fuente.</p>
+      </div>
+    </div>
+
+    <div class="etl-step">
+      <div class="etl-num">2</div>
+      <div class="etl-content">
+        <h5>Pipeline ETL – Microsoft Fabric Data Factory</h5>
+        <p>La orquestación del proceso ETL se gestiona mediante Microsoft Fabric Data Factory. El pipeline extrae datos de las tablas transaccionales, aplica procesos de limpieza y estandarización mediante Dataflows, y carga la información transformada en el Fabric Data Warehouse.</p>
+      </div>
+    </div>
+
+    <div class="etl-step">
+      <div class="etl-num">3</div>
+      <div class="etl-content">
+        <h5>Automatización con Notebooks en Python</h5>
+        <p>Una vez finalizado el pipeline, se ejecuta un Notebook en Python que genera y envía por correo un reporte diario con indicadores clave: ticket promedio, volumen de transacciones, monto total vendido por canal.</p>
+      </div>
+    </div>
+
+    <div class="etl-step">
+      <div class="etl-num">4</div>
+      <div class="etl-content">
+        <h5>Seguridad y Ejecución Programada</h5>
+        <p>El flujo completo se ejecuta de forma segura y programada, utilizando credenciales protegidas y reglas de ejecución automática diaria, garantizando que Power BI cuente siempre con información actualizada.</p>
+      </div>
+    </div>
+
+    <h3>Pipeline en Microsoft Fabric</h3>
+    <img src="pipeline.png" class="imagen-reporte" alt="Pipeline ETL en Microsoft Fabric">
+    <img src="pipeline2.png" class="imagen-reporte" alt="Detalle del pipeline ETL">
+
+    <h3>Notebook – Automatización y Notificaciones</h3>
+    <img src="notebook1.png" class="imagen-reporte" alt="Notebook Python paso 1">
+    <img src="notebook2.png" class="imagen-reporte" alt="Notebook Python paso 2">
+    <img src="notebook3.png" class="imagen-reporte" alt="Notebook Python paso 3">
+    <img src="notebook4.png" class="imagen-reporte" alt="Notebook Python paso 4">
+   
+    <h3>Correo de notificación – Resultado del Pipeline</h3>
+    <img src="correo_pipeline.png" class="imagen-reporte" alt="Correo de notificación del pipeline">
+    <img src="correo_pipeline2.png" class="imagen-reporte" alt="Detalle del correo de notificación">
+  </section>
+
+  <hr>
+
+  <!-- ════════════════════════════════════════
+       DATA WAREHOUSE 
+  ════════════════════════════════════════ -->
+  <section id="dw-">
+    <span class="section-badge">🧱 Data Warehouse</span>
+    <h2>Data Warehouse  – Capa de Almacén de Datos</h2>
+
+    <p>
+      La capa de Data Warehouse constituye el núcleo estructurado del sistema analítico.
+      Aquí se concentran los datos procesados desde la capa ETL (gestionada con Pipelines y
+      Dataflows en Microsoft Fabric). Una vez integrados, los datos se almacenan en un Fabric
+      Data Warehouse, donde son normalizados, modelados y optimizados para su consulta,
+      análisis y visualización en Power BI.
+    </p>
+
+    <h3>⚙️ Medidas DAX calculadas</h3>
+    <p>Se definen indicadores estratégicos para el análisis del KPI, entre los que se incluyen:</p>
+    <p>
+      <span class="pill">Ticket Promedio</span>
+      <span class="pill">Variación Mensual</span>
+      <span class="pill">Cantidad Ventas</span>
+      <span class="pill">Suma ventas</span>
+      <span class="pill">Ticket YoY %</span>
+      <span class="pill">Ticket maximo %</span>
+    
+    </p>
+
+    <h3>Vista en Microsoft Fabric</h3>
+    <img src="fabric_view.png" class="imagen-reporte" alt="Vista del Data Warehouse en Microsoft Fabric">
+
+
+  </section>
+
+  <hr>
+
+  <!-- ════════════════════════════════════════
+       PRESENTATION  (original + ampliado)
+  ════════════════════════════════════════ -->
+  <section id="presentation-">
+    <span class="section-badge">📊 Presentation </span>
+    <h2>Interfaz general de Power BI</h2>
+
+    <p>
+      Con el modelo de datos estructurado, se desarrolla el reporte dentro de Power BI.
+      La interfaz se organiza en secciones que presentan el contexto del negocio
+      y las preguntas analíticas que guían la exploración de la información.
+    </p>
+<h3>Dashboard Comercial</h3>
+    <img src="dashboard1.png" class="imagen-reporte" alt="Dashboard Comercial">
+
+   
+    <h3>Caso de negocio</h3>
+    <img src="casonegocio.png" class="imagen-reporte" alt="Caso de negocio">
+
+    <h3>Definición del indicador</h3>
+    <img src="indicador.png" class="imagen-reporte" alt="Definición del indicador">
+
+    <h3>Dashboard principal</h3>
+    <img src="dashboard.png" class="imagen-reporte" alt="Dashboard principal">
+
+    <h3>Reporte</h3>
+    <img src="reporte.png" class="imagen-reporte" alt="Reporte">
+
+    <h3>Exploración analítica mediante preguntas</h3>
+
+    <div class="tarjeta-pregunta">
+      <h4>Pregunta 1</h4>
+      <h5>Pantalla de gráfico</h5>
+      <img src="1.1.png" class="imagen-reporte">
+      <h5>Pantalla para obtener detalles</h5>
+      <img src="1.2.png" class="imagen-reporte">
+      <h5>Pantalla del detalle requerido</h5>
+      <img src="1.3.png" class="imagen-reporte">
+    </div>
+
+    <div class="tarjeta-pregunta">
+      <h4>Pregunta 2</h4>
+      <h5>Pantalla de gráfico</h5>
+      <img src="2.1.png" class="imagen-reporte">
+      <h5>Pantalla para obtener detalles</h5>
+      <img src="2.2.png" class="imagen-reporte">
+      <h5>Pantalla del detalle requerido</h5>
+      <img src="2.3.png" class="imagen-reporte">
+    </div>
+
+    <div class="tarjeta-pregunta">
+      <h4>Pregunta 3</h4>
+      <h5>Pantalla de gráfico</h5>
+      <img src="3.1.png" class="imagen-reporte">
+      <h5>Pantalla para obtener detalles</h5>
+      <img src="3.2.png" class="imagen-reporte">
+      <h5>Pantalla del detalle requerido</h5>
+      <img src="3.3.png" class="imagen-reporte">
+    </div>
+
+    <div class="tarjeta-pregunta">
+      <h4>Pregunta 4</h4>
+      <h5>Pantalla de gráfico</h5>
+      <img src="4.1.png" class="imagen-reporte">
+      <h5>Pantalla para obtener detalles</h5>
+      <img src="4.2.png" class="imagen-reporte">
+      <h5>Pantalla del detalle requerido</h5>
+      <img src="4.3.png" class="imagen-reporte">
+    </div>
+
+    <div class="tarjeta-pregunta">
+      <h4>Pregunta 5</h4>
+      <h5>Pantalla de gráfico</h5>
+      <img src="5.1.png" class="imagen-reporte">
+      <h5>Pantalla para obtener detalles</h5>
+      <img src="5.2.png" class="imagen-reporte">
+      <h5>Pantalla del detalle requerido</h5>
+      <img src="5.3.png" class="imagen-reporte">
+    </div>
+
+    <div class="tarjeta-pregunta">
+      <h4>Pregunta 6</h4>
+      <h5>Pantalla de gráfico</h5>
+      <img src="6.1.png" class="imagen-reporte">
+      <h5>Pantalla para obtener detalles</h5>
+      <img src="6.2.png" class="imagen-reporte">
+      <h5>Pantalla del detalle requerido</h5>
+      <img src="6.3.png" class="imagen-reporte">
+    </div>
+
+    <div class="tarjeta-pregunta">
+      <h4>Pregunta 7</h4>
+      <h5>Pantalla de gráfico</h5>
+      <img src="7.1.png" class="imagen-reporte">
+      <h5>Pantalla para obtener detalles</h5>
+      <img src="7.2.png" class="imagen-reporte">
+      <h5>Pantalla del detalle requerido</h5>
+      <img src="7.3.png" class="imagen-reporte">
+    </div>
+
+    <div class="tarjeta-pregunta">
+      <h4>Pregunta 8</h4>
+      <h5>Pantalla de gráfico</h5>
+      <img src="8.1.png" class="imagen-reporte">
+      <h5>Pantalla para obtener detalles</h5>
+      <img src="8.2.png" class="imagen-reporte">
+      <h5>Pantalla del detalle requerido</h5>
+      <img src="8.3.png" class="imagen-reporte">
+    </div>
+
+    <div class="tarjeta-pregunta">
+      <h4>Pregunta 9</h4>
+      <h5>Pantalla de gráfico</h5>
+      <img src="9.1.png" class="imagen-reporte">
+      <h5>Pantalla para obtener detalles</h5>
+      <img src="9.2.png" class="imagen-reporte">
+      <h5>Pantalla del detalle requerido</h5>
+      <img src="9.3.png" class="imagen-reporte">
+    </div>
+
+    <div class="tarjeta-pregunta">
+      <h4>Pregunta 10</h4>
+      <h5>Pantalla de gráfico</h5>
+      <img src="10.1.png" class="imagen-reporte">
+      <h5>Pantalla para obtener detalles</h5>
+      <img src="10.2.png" class="imagen-reporte">
+      <h5>Pantalla del detalle requerido</h5>
+      <img src="10.3.png" class="imagen-reporte">
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ════════════════════════════════════════
+       CONCLUSIONES
+  ════════════════════════════════════════ -->
+  <section id="conclusiones">
+    <span class="section-badge">✅ Conclusiones</span>
+    <h2>Conclusiones</h2>
+
+    <ul>
+      <li>
+        El análisis del indicador de ticket promedio en los canales digitales de Falabella Perú evidencia una oportunidad de crecimiento en el valor de las transacciones. Al cierre de 2025 el indicador alcanza <strong>S/ 238.93</strong>, aún por debajo de la meta estratégica de <strong>S/ 250</strong>, lo que refleja un potencial de mejora en la monetización de las compras digitales.
+      </li>
+      <li>
+        El modelo de datos desarrollado permitió integrar información de ventas, clientes, productos, campañas y canales digitales, facilitando un análisis integral del desempeño comercial. Esta estructura asegura consistencia en el análisis y permite que distintos analistas trabajen sobre un mismo modelo de información.
+      </li>
+      <li>
+        El análisis comparativo entre 2024 y 2025 muestra una evolución positiva del ticket promedio en los canales digitales, pasando de <strong>S/ 202.70</strong> a <strong>S/ 216.09</strong>, lo que representa un crecimiento interanual de <strong>6.61%</strong> y evidencia una tendencia favorable en el gasto promedio de los clientes.
+      </li>
+      <li>
+        La implementación de la arquitectura de datos con Microsoft Fabric, el aplicativo web y Power BI convierte los datos en un activo estratégico que impulsa la innovación y la capacidad de respuesta de la organización, asegurando información siempre actualizada para la toma de decisiones.
+      </li>
+      <li>
+        Los resultados obtenidos permiten identificar categorías, campañas y segmentos de clientes que impulsan el crecimiento del ticket promedio, proporcionando información clave para diseñar estrategias comerciales orientadas a incrementar el valor por transacción y fortalecer los ingresos del canal digital.
+      </li>
+    </ul>
+  </section>
+
+</div>
+
+</body>
+</html>
